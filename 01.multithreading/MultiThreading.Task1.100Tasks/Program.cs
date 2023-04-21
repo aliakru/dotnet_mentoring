@@ -50,23 +50,12 @@ namespace MultiThreading.Task1._100Tasks
             Console.ReadLine();
         }
 
-        static void HundredTasksSync()
-        {
-            for (int i = 0; i < 11; i++)
-            {
-                for (int k = 1; k < 6; k++)
-                {
-                    Output(i, k);
-                }
-            }
-        }
-
         static void Output(int taskNumber, int iterationNumber)
         {
             Console.WriteLine($"Task #{taskNumber} – {iterationNumber}     ");
         }
 
-        //static async Task HundredTasks()
+        //static void HundredTasks()
         //{
         //    var tasks = new List<Task>();
         //    for (int i = 0; i < 10; i++)
@@ -74,7 +63,7 @@ namespace MultiThreading.Task1._100Tasks
         //        tasks.Add(Task.Run(() => Logic(i)));
         //    }
 
-        //    await Task.WhenAll(tasks);
+        //    Task.WhenAll(tasks);
         //}
 
         //static void Logic(int taskNumber) 
