@@ -6,6 +6,8 @@
  * Fourth Task – calculates the average value. All this tasks should print the values to console.
  */
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MultiThreading.Task2.Chaining
 {
@@ -22,8 +24,66 @@ namespace MultiThreading.Task2.Chaining
             Console.WriteLine();
 
             // feel free to add your code
+            var arrayTask = Task.Run(() =>
+            {
+                var integers = GetArray();
+                Print("Initial array:", integers);
 
+                return integers;
+            });
+
+            var task2 = arrayTask.ContinueWith(antecedent => 
+            {
+                int[] integers = antecedent.Result;
+                var random = new Random();
+                var multiplier = random.Next(1, 25);
+                Print("Multiplier:", multiplier);
+
+                var result = integers.Select(item => item * multiplier).ToArray();
+
+                Print("Multiplied array:", result);
+                return result;
+            });
+
+            var task3 = task2.ContinueWith(antecedent =>
+            {
+                int[] integers = antecedent.Result;
+
+                Array.Sort(integers);
+
+                Print("Sorted array:", integers);
+                return integers;
+            });
+
+            var task4 = task3.ContinueWith(antecedent =>
+            {
+                int[] integers = antecedent.Result;
+                var sum = 0;
+                foreach (var item in integers) { sum += item; }
+
+                return sum / integers.Length;
+            });
+
+            Print("Average:", task4.Result);
             Console.ReadLine();
+        }
+
+        static int[] GetArray()
+        {
+            var random = new Random();
+            var arrayOfInt = new int[10];
+
+            for (int i = 0; i < arrayOfInt.Length; i++)
+            {
+                arrayOfInt[i] = random.Next(0, 150);
+            }
+
+            return arrayOfInt;
+        }
+
+        static void Print(string msg, params int[] array) 
+        {
+            Console.WriteLine($"{msg} {String.Join(", ", array)}");
         }
     }
 }
