@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MultiThreading.Task3.MatrixMultiplier.Matrices;
 using MultiThreading.Task3.MatrixMultiplier.Multipliers;
@@ -8,6 +9,8 @@ namespace MultiThreading.Task3.MatrixMultiplier.Tests
     [TestClass]
     public class MultiplierTest
     {
+        public TestContext TestContext { get; set; }
+
         [TestMethod]
         public void MultiplyMatrix3On3Test()
         {
@@ -15,11 +18,31 @@ namespace MultiThreading.Task3.MatrixMultiplier.Tests
             TestMatrix3On3(new MatricesMultiplierParallel());
         }
 
-        [TestMethod]
-        public void ParallelEfficiencyTest()
+        [DataRow(10)]
+        [DataRow(100)]
+        [DataRow(1000)]
+        [DataTestMethod]
+        public void ParallelEfficiencyTest(long size)
         {
             // todo: implement a test method to check the size of the matrix which makes parallel multiplication more effective than
             // todo: the regular one
+
+            var matrixA = new Matrix(size, size, true);
+            var matrixB = new Matrix(size, size, true);
+            var sequentialMultiplier = new MatricesMultiplier();
+            var parallelMultiplier = new MatricesMultiplierParallel();
+
+            var sw = Stopwatch.StartNew();
+            sequentialMultiplier.Multiply(matrixA, matrixB);
+            sw.Stop();
+
+            TestContext.WriteLine($"Sequential multiplying: {sw.ElapsedMilliseconds} ms.");
+
+            sw.Restart();
+            parallelMultiplier.Multiply(matrixA, matrixB);
+            sw.Stop();
+
+            TestContext.WriteLine($"Parallel multiplying: {sw.ElapsedMilliseconds} ms.");
         }
 
         #region private methods
