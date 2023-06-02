@@ -66,12 +66,12 @@ namespace Expressions.Task3.E3SQueryProvider.Test.Ignored
             }
         }
 
-        [Fact(Skip = "This test is provided to show the general idea of usage.")]
+        [Fact]
         public void WithProvider()
         {
             var employees = new E3SEntitySet<EmployeeEntity>(searchService.Value);
 
-            foreach (var emp in employees.Where(e => e.Workstation == "EPRUIZHW0249"))
+            foreach (var emp in employees.Where(e => e.Workstation == "EPRUIZHW006" && e.Manager.StartsWith("John")))
             {
                 _testOutputHelper.WriteLine("{0} {1}", emp.NativeName, emp.StartWorkDate);
             }

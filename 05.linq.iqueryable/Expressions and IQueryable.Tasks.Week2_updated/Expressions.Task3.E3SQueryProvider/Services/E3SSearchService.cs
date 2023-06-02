@@ -44,11 +44,11 @@ namespace Expressions.Task3.E3SQueryProvider.Services
             {
                 throw new ArgumentNullException(nameof(finalType));
             }
-            var items = finalType.GetProperty("items");
-            if (items == null)
-            {
-                throw new ArgumentNullException(nameof(items));
-            }
+            //var items = finalType.GetProperty("items");
+            //if (items == null)
+            //{
+            //    throw new ArgumentNullException(nameof(items));
+            //}
 
             var requestGenerator = new FtsRequestGenerator(_baseAddress);
             Uri request = requestGenerator.GenerateRequestUrl(type, query, start, limit);
@@ -59,16 +59,16 @@ namespace Expressions.Task3.E3SQueryProvider.Services
 
             var list = Activator.CreateInstance(typeof(List<>).MakeGenericType(type)) as IList;
             
-            foreach (object item in (IEnumerable)items.GetValue(result))
-            {
-                var data = item.GetType().GetProperty("data");
-                if (data == null)
-                {
-                    throw new ArgumentNullException(nameof(data));
-                }
+            //foreach (object item in (IEnumerable)items.GetValue(result))
+            //{
+            //    var data = item.GetType().GetProperty("data");
+            //    if (data == null)
+            //    {
+            //        throw new ArgumentNullException(nameof(data));
+            //    }
 
-                list.Add(data.GetValue(item));
-            }
+            //    list.Add(data.GetValue(item));
+            //}
 
             return list;
         }

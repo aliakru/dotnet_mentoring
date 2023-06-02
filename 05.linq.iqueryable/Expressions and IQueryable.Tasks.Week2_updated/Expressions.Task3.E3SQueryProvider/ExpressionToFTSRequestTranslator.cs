@@ -33,6 +33,51 @@ namespace Expressions.Task3.E3SQueryProvider
 
                 return node;
             }
+
+            if (node.Method.Name == "StartsWith")
+            {
+                var arg = node.Arguments[0];
+                Visit(node.Object);
+                _resultStringBuilder.Append("(");
+                Visit(arg);
+                _resultStringBuilder.Append("*)");
+
+                return node;
+            }
+
+            if (node.Method.Name == "EndsWith")
+            {
+                var arg = node.Arguments[0];
+                Visit(node.Object);
+                _resultStringBuilder.Append("(*");
+                Visit(arg);
+                _resultStringBuilder.Append(")");
+
+                return node;
+            }
+
+            if (node.Method.Name == "Contains")
+            {
+                var arg = node.Arguments[0];
+                Visit(node.Object);
+                _resultStringBuilder.Append("(*");
+                Visit(arg);
+                _resultStringBuilder.Append("*)");
+
+                return node;
+            }
+
+            if (node.Method.Name == "Equals")
+            {
+                var arg = node.Arguments[0];
+                Visit(node.Object);
+                _resultStringBuilder.Append("(");
+                Visit(arg);
+                _resultStringBuilder.Append(")");
+
+                return node;
+            }
+
             return base.VisitMethodCall(node);
         }
 
@@ -42,7 +87,20 @@ namespace Expressions.Task3.E3SQueryProvider
             {
                 case ExpressionType.Equal:
                     if (node.Left.NodeType != ExpressionType.MemberAccess)
-                        throw new NotSupportedException($"Left operand should be property or field: {node.NodeType}");
+                    {
+                        if (node.Left.NodeType == ExpressionType.Constant)
+                        {
+                            Visit(node.Right);
+                            _resultStringBuilder.Append("(");
+                            Visit(node.Left);
+                            _resultStringBuilder.Append(")");
+                            break;
+                        }
+                        else
+                        {
+                            throw new NotSupportedException($"Left operand should be property or field or constant: {node.NodeType}");
+                        }
+                    }
 
                     if (node.Right.NodeType != ExpressionType.Constant)
                         throw new NotSupportedException($"Right operand should be constant: {node.NodeType}");
@@ -51,6 +109,12 @@ namespace Expressions.Task3.E3SQueryProvider
                     _resultStringBuilder.Append("(");
                     Visit(node.Right);
                     _resultStringBuilder.Append(")");
+                    break;
+
+                case ExpressionType.AndAlso:
+                    Visit(node.Left);
+                    _resultStringBuilder.Append("&");
+                    Visit(node.Right);
                     break;
 
                 default:

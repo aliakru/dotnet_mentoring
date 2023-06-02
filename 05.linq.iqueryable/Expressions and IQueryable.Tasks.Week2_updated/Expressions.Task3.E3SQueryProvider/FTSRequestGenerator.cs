@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Expressions.Task3.E3SQueryProvider
 {
@@ -31,15 +32,12 @@ namespace Expressions.Task3.E3SQueryProvider
         public Uri GenerateRequestUrl(Type type, string query = "*", int start = 0, int limit = 10)
         {
             string metaTypeName = GetMetaTypeName(type);
+            
+            var queries = query.Split('&');
 
             var ftsQueryRequest = new FtsQueryRequest
             {
-                Statements = new List<Statement>
-                {
-                    new Statement {
-                        Query = query
-                    }
-                },
+                Statements = queries.Select(query => new Statement { Query = query }).ToList(),
                 Start = start,
                 Limit = limit
             };
